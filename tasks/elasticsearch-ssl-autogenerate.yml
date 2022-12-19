@@ -50,9 +50,21 @@
       run_once: true
       loop: "{{ ansible_play_hosts }}"
 
+    - name: keyfile | find out CA file exists or not
+      stat:
+        path: "{{ dst_cafile }}"
+      register: dst_cafile_present
+
+    - name: keyfile | create CA when none has a keyfile
+      shell: >-
+        {{ es_home }}/bin/elasticsearch-certutil ca --days 10950 -out {{ dst_cafile }} --pass {{ dst_cafile_password }}
+      register: new_keyfile
+      when: inventory_hostname == keyfile_host
+        and dst_cafile_present.stat.exists == false
+
     - name: keyfile | create when none has a keyfile
       shell: >-
-        {{ es_home }}/bin/elasticsearch-certutil ca --days 10950 -out {{ dst_keyfile }} --pass {{ dst_keyfile_password }}
+        {{ es_home }}/bin/elasticsearch-certutil cert --ca {{ dst_cafile }} --ca-pass {{ dst_cafile_password }} --days 10950 -out {{ dst_keyfile }} --pass {{ dst_keyfile_password }}
       register: new_keyfile
       when: inventory_hostname == keyfile_host
 
