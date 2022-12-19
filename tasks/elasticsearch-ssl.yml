@@ -121,10 +121,10 @@
 
 - name: set fact key/trust store changed
   set_fact:
-    ssl_store_changed: (copy_keystore is defined and copy_keystore.changed)
+    ssl_store_changed: "{{ (copy_keystore is defined and copy_keystore.changed)
       or (copy_truststore is defined and copy_truststore.changed)
       or (copy_keystore_auto is defined and copy_keystore_auto.changed)
-      or (copy_truststore_auto is defined and copy_truststore_auto.changed)
+      or (copy_truststore_auto is defined and copy_truststore_auto.changed) }}"
 
 - name: Set keystore password
   become: yes
