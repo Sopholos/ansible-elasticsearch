@@ -30,7 +30,7 @@
 - name: Autogenerate SSL/TLS truststore
   include_tasks: elasticsearch-ssl-autogenerate.yml
   when: es_autogenerate_ssl_certs
-  when: es_ssl_keystore != es_ssl_truststore
+    and es_ssl_keystore != es_ssl_truststore
   vars:
     tmp_keyfile: /tmp/es_ssl_t_keyfile
     dst_cafile: "{{ es_ssl_ca_cert }}"
@@ -48,7 +48,7 @@
     group: "{{ es_group }}"
     mode: "640"
   when: es_ssl_keystore and es_ssl_truststore
-  when: es_autogenerate_ssl_certs
+    and es_autogenerate_ssl_certs
   notify: restart elasticsearch
   register: copy_keystore_auto
 
@@ -61,7 +61,7 @@
     group: "{{ es_group }}"
     mode: "640"
   when: es_ssl_upload and es_ssl_keystore and es_ssl_truststore
-  when: not es_autogenerate_ssl_certs
+    and not es_autogenerate_ssl_certs
   notify: restart elasticsearch
   register: copy_keystore
 
@@ -75,7 +75,7 @@
     group: "{{ es_group }}"
     mode: "640"
   when: es_ssl_keystore and es_ssl_truststore
-  when: es_autogenerate_ssl_certs
+    and es_autogenerate_ssl_certs
   notify: restart elasticsearch  
   register: copy_truststore_auto
 
